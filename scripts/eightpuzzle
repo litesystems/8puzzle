@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+# -*- coding; utf-8 -*-
+
+import argparse
+import json
+
+import matplotlib.pyplot as plt
+import networkx as nx
+
+from eight import heuristic
+from eight.puzzle import Puzzle
+from eight.solver import PuzzleAStarSolver, PuzzleIDAStarSolver
+
+
+def puzzle_str(puzzle):
+    s = ''
+    if len(puzzle.n) > 0:
+        s += ','.join(map(str, puzzle.n))
+        s += '\n'
+    s += 'f(n)=%d\n' % puzzle.fs
+    s += str(puzzle)
+    return s
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="8-Puzzle Solver")
+    parser.add_argument(
+        '--height', default=20, type=int, help="height of image file")
+    parser.add_argument(
+        '--width', default=20, type=int, help="width of image file")
+    parser.add_argument('-o', '--output', help="an output image file")
+    parser.add_argument('mode', type=str, choices=('astar', 'idastar'))
+    parser.add_argument('heuristic', type=str, choices=('diff', 'manhattan'))
+    parser.add_argument('puzzle',
+                        help="ex. [[1, 2, 3], [5, 4, 6], [7, 0, 8]]")
+    args = parser.parse_args()
+
+    plt.figure(figsize=(args.width, args.height))
+    ep = Puzzle(json.loads(args.puzzle))
+    if args.mode == 'astar':
+        if args.heuristic == 'diff':
+            solver = PuzzleAStarSolver(ep, heuristic.diff)
+        elif args.heuristic == 'manhattan':
+            solver = PuzzleAStarSolver(ep, heuristic.manhattan)
+    elif args.mode == 'idastar':
+        if args.heuristic == 'diff':
+            solver = PuzzleIDAStarSolver(ep, heuristic.diff)
+        elif args.heuristic == 'manhattan':
+            solver = PuzzleIDAStarSolver(ep, heuristic.manhattan)
+
+    answer = solver.solve()
+
+    G = nx.DiGraph()
+    if args.mode == 'astar':
+        puzzles = solver.open_puzzles + solver.close_puzzles
+    elif args.mode == 'idastar':
+        puzzles = solver.puzzles
+    route_nodes = []
+    for p in puzzles:
+        s = puzzle_str(p)
+        if p in answer:
+            route_nodes.append(s)
+        G.add_node(s)
+        if p.parent is None:
+            continue
+        G.add_edge(puzzle_str(p.parent), puzzle_str(p))
+
+    pos = nx.graphviz_layout(G, prog='dot')
+    nx.draw_networkx_edges(G, pos)
+    nx.draw_networkx_nodes(
+        G, pos, node_shape='s', node_color='w', node_size=5000)
+    nx.draw_networkx_nodes(
+        G, pos, nodelist=route_nodes,
+        node_shape='s', node_color='b', node_size=5000)
+    nx.draw_networkx_labels(G, pos)
+    plt.axis('off')
+    if args.output is not None:
+        plt.savefig(args.output)
+    else:
+        plt.show()
