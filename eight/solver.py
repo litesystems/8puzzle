@@ -66,7 +66,6 @@ class PuzzleIDAStarSolver(object):
 
 
 class PuzzleAStarSolver(object):
-
     def __init__(self, puzzle, heuristic_func):
         puzzle.gs = 0
         puzzle.hs = heuristic_func(puzzle)

@@ -6,7 +6,6 @@ from copy import deepcopy
 
 
 class Puzzle(object):
-
     def __init__(self, table):
         if not self._validate(table):
             raise ValueError()

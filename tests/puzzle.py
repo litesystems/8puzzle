@@ -45,3 +45,10 @@ class TestPuzzle(unittest.TestCase):
         epw = Puzzle([[2, 3, 1], [5, 4, 6], [0, 8, 7]])
         self.assertTrue(epa.is_answer())
         self.assertFalse(epw.is_answer())
+
+    def test_validate(self):
+        ep = Puzzle([[1, 2, 3], [4, 5, 6], [7, 8, 0]])
+        cpt = [[1, 2, 3], [4, 5, 8], [6, 7, 0]]
+        wpt = [[1, 2, 3], [4, 5], [6, 7, 0]]
+        self.assertTrue(ep._validate(cpt))
+        self.assertFalse(ep._validate(wpt))
