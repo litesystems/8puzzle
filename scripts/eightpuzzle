@@ -28,20 +28,22 @@ if __name__ == '__main__':
     parser.add_argument(
         '--width', default=20, type=int, help="width of image file")
     parser.add_argument('-o', '--output', help="an output image file")
-    parser.add_argument('mode', type=str, choices=('astar', 'idastar'))
-    parser.add_argument('heuristic', type=str, choices=('diff', 'manhattan'))
+    parser.add_argument('algorithm', type=str, choices=('astar', 'idastar'),
+                        help="algorithm")
+    parser.add_argument('heuristic', type=str, choices=('diff', 'manhattan'),
+                        help="heuristic function")
     parser.add_argument('puzzle',
                         help="ex. [[1, 2, 3], [5, 4, 6], [7, 0, 8]]")
     args = parser.parse_args()
 
     plt.figure(figsize=(args.width, args.height))
     ep = Puzzle(json.loads(args.puzzle))
-    if args.mode == 'astar':
+    if args.algorithm == 'astar':
         if args.heuristic == 'diff':
             solver = PuzzleAStarSolver(ep, heuristic.diff)
         elif args.heuristic == 'manhattan':
             solver = PuzzleAStarSolver(ep, heuristic.manhattan)
-    elif args.mode == 'idastar':
+    elif args.algorithm == 'idastar':
         if args.heuristic == 'diff':
             solver = PuzzleIDAStarSolver(ep, heuristic.diff)
         elif args.heuristic == 'manhattan':
@@ -50,9 +52,9 @@ if __name__ == '__main__':
     answer = solver.solve()
 
     G = nx.DiGraph()
-    if args.mode == 'astar':
+    if args.algorithm == 'astar':
         puzzles = solver.open_puzzles + solver.close_puzzles
-    elif args.mode == 'idastar':
+    elif args.algorithm == 'idastar':
         puzzles = solver.puzzles
     route_nodes = []
     for p in puzzles:
