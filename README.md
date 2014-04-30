@@ -12,12 +12,12 @@ Installation
 
 Example
 -------
-# Input
+### Input
 ```
 eightpuzzle -o out.pdf astar manhattan "[[4,1,2],[6,0,3],[7,5,8]]"
 ```
 
-# Output
+### Output
 ![Example](http://i.gyazo.com/fd689c770efcc3ad628b8d8c0c74e23b.png)
 
 Help
