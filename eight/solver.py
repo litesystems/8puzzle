@@ -4,8 +4,6 @@
 from __future__ import unicode_literals
 from copy import deepcopy
 
-from eight.puzzle import Puzzle
-
 
 class PuzzleIDAStarSolver(object):
 
@@ -21,11 +19,11 @@ class PuzzleIDAStarSolver(object):
         """深さ優先探索"""
         # f が limit を超えていれば探索失敗
         if puzzle.fs > f_limit:
-            return (None, puzzle.fs)
+            return None, puzzle.fs
 
         # 答えであれば探索終了
         if puzzle.is_answer():
-            return (route, f_limit)
+            return route, f_limit
 
         next_f_limit = float('inf')
 
@@ -48,9 +46,9 @@ class PuzzleIDAStarSolver(object):
             solution, new_cost_limit = self._solve_df(
                 np, f_limit, route + [np])
             if solution is not None:
-                return (solution, new_cost_limit)
+                return solution, new_cost_limit
             next_f_limit = min(next_f_limit, new_cost_limit)
-        return (None, next_f_limit)
+        return None, next_f_limit
 
     def solve(self):
         bound = self.root.hs
