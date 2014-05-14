@@ -51,6 +51,12 @@ if __name__ == '__main__':
 
     answer = solver.solve()
 
+    print('Route:')
+    for a in answer:
+        print(a.table)
+    print('Expansion: ' + str(solver.expand_n))
+    print('Memory: ' + str(solver.max_memory))
+
     G = nx.DiGraph()
     if args.algorithm == 'astar':
         puzzles = solver.open_puzzles + solver.close_puzzles

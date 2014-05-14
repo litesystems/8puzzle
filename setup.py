@@ -17,7 +17,8 @@ setup(name='eight',
       test_suite='tests',
       install_requires=[
           'matplotlib>=1.3.1',
-          'networkx>=1.8.1'
+          'networkx>=1.8.1',
+          'pygraphviz>=1.2'
       ],
       classifiers=[
           'Development Status :: 3 - Alpha',

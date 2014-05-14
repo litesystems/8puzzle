@@ -14,6 +14,7 @@ class PuzzleIDAStarSolver(object):
         self.heuristic = heuristic_func
         self.puzzles = [puzzle]
         self.root = puzzle
+        self.max_memory = 0
 
     def _solve_df(self, puzzle, f_limit, route):
         """深さ優先探索"""
@@ -33,6 +34,8 @@ class PuzzleIDAStarSolver(object):
         puzzle.n.append(self.expand_n)
 
         next_puzzles = sorted(puzzle.next_puzzles(), key=lambda p: 1 + p.hs)
+
+        self.max_memory = max(self.max_memory, len(next_puzzles) + len(route))
 
         for np in next_puzzles:
             np.parent = puzzle
@@ -71,6 +74,7 @@ class PuzzleAStarSolver(object):
         self.open_puzzles = [puzzle]
         self.close_puzzles = []
         self.heuristic = heuristic_func
+        self.max_memory = 0
 
     def solve(self):
         # 展開回数
@@ -87,6 +91,7 @@ class PuzzleAStarSolver(object):
                 while puzzle.parent is not None:
                     route.insert(0, puzzle.parent)
                     puzzle = puzzle.parent
+                    self.expand_n = expand_n
                 return deepcopy(route)
 
             # 取り出したパズルを Close に移動
@@ -120,4 +125,6 @@ class PuzzleAStarSolver(object):
                 else:
                     # 新しい盤面であれば Open に追加
                     self.open_puzzles.append(p)
+                self.max_memory = max(self.max_memory,
+                        len(self.open_puzzles) + len(self.close_puzzles))
         return None
